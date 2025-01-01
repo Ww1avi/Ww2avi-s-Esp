@@ -1,0 +1,93 @@
+-- Ww2avi's Script
+-- ESP with GUI
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+
+-- Function to create ESP for a player
+local function createESP(player)
+    local highlight = Instance.new("Highlight")
+    highlight.Parent = player.Character
+    highlight.Adornee = player.Character
+    highlight.FillColor = Color3.new(1, 0, 0) -- Red color
+    highlight.OutlineColor = Color3.new(1, 1, 1) -- White outline
+end
+
+-- GUI Setup
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Parent = game:GetService("CoreGui")
+ScreenGui.Name = "Ww2aviESP"
+
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(0, 200, 0, 150)
+MainFrame.Position = UDim2.new(0.5, -100, 0.5, -75)
+MainFrame.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+MainFrame.Parent = ScreenGui
+
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, 0, 0, 30)
+Title.BackgroundTransparency = 1
+Title.Text = "Ww2avi's ESP Script"
+Title.TextColor3 = Color3.new(1, 1, 1)
+Title.Font = Enum.Font.SourceSansBold
+Title.TextSize = 18
+Title.Parent = MainFrame
+
+local ToggleButton = Instance.new("TextButton")
+ToggleButton.Size = UDim2.new(0.8, 0, 0, 40)
+ToggleButton.Position = UDim2.new(0.1, 0, 0.3, 0)
+ToggleButton.Text = "Enable ESP"
+ToggleButton.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
+ToggleButton.TextColor3 = Color3.new(1, 1, 1)
+ToggleButton.Font = Enum.Font.SourceSans
+ToggleButton.TextSize = 16
+ToggleButton.Parent = MainFrame
+
+local CloseButton = Instance.new("TextButton")
+CloseButton.Size = UDim2.new(0.8, 0, 0, 40)
+CloseButton.Position = UDim2.new(0.1, 0, 0.6, 0)
+CloseButton.Text = "Close"
+CloseButton.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
+CloseButton.TextColor3 = Color3.new(1, 1, 1)
+CloseButton.Font = Enum.Font.SourceSans
+CloseButton.TextSize = 16
+CloseButton.Parent = MainFrame
+
+-- ESP Toggle Logic
+local espEnabled = false
+
+ToggleButton.MouseButton1Click:Connect(function()
+    espEnabled = not espEnabled
+    ToggleButton.Text = espEnabled and "Disable ESP" or "Enable ESP"
+
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer and player.Character then
+            if espEnabled then
+                createESP(player)
+            else
+                local highlight = player.Character:FindFirstChild("Highlight")
+                if highlight then
+                    highlight:Destroy()
+                end
+            end
+        end
+    end
+end)
+
+-- Close Button Logic
+CloseButton.MouseButton1Click:Connect(function()
+    ScreenGui:Destroy()
+end)
+
+-- Auto-remove ESP if player leaves
+Players.PlayerRemoving:Connect(function(player)
+    if player.Character then
+        local highlight = player.Character:FindFirstChild("Highlight")
+        if highlight then
+            highlight:Destroy()
+        end
+    end
+end)
+
+print("Ww2avi's ESP Script Loaded!")
